@@ -1,5 +1,5 @@
 # TOJ 채점 서버
-Thekeys judge 백준 클론 사이트를 위한 서버입니다. 
+Thekeys judge 백준 클론 사이트를 위한 서버입니다. 로그인과 회원가입, 문제의 정보 가벼오기, 채점 서버를 포함합니다.
 
 ## todo
 1. login(done)
