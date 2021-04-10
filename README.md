@@ -23,10 +23,10 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
 - user/signin
 ```json
 {
-    email : string,
-    password : string,
-    login_id : string,
-    name : string
+    email : String,
+    password : String,
+    login_id : String,
+    name : String
 }
 ```
 
@@ -35,8 +35,8 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
 - user/login
 ```json
 {
-    login_id : string,
-    password : string,
+    login_id : String,
+    password : String,
 }
 ```
 
@@ -57,7 +57,33 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
 - solved/ 
 ```json
 {
-    user_id : string,
-    problem_id : string
+    user_id : String,
+    problem_id : String
+}
+```
+
+# PROBLEM
+
+## submit
+- post
+- problem/submit
+- login is needed
+```json
+{
+    {
+    "id" : Number,
+    "problem_id" : Number,
+    "language" : Number,
+    "code" : String
+}
+}
+```
+(사용예시)
+```json
+{
+    "id" : 1,
+    "problem_id" : 1000,
+    "language" : 0,
+    "code" : "#include<iostream>\nusing namespace std;\nint main(void){\n int a, b;\n cin>>a>>b;\ncout<<a+b<<endl;}\n"
 }
 ```
