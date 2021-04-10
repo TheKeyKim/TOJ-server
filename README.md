@@ -21,7 +21,7 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
 ## signin
 - post
 - user/signin
-```json
+```
 {
     email : String,
     password : String,
@@ -33,7 +33,7 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
 ## login
 - post
 - user/login
-```json
+```
 {
     login_id : String,
     password : String,
@@ -55,7 +55,7 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
 ## solve the problem
 - post
 - solved/ 
-```json
+```
 {
     user_id : String,
     problem_id : String
@@ -68,14 +68,12 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
 - post
 - problem/submit
 - login is needed
-```json
+```
 {
-    {
     "id" : Number,
     "problem_id" : Number,
     "language" : Number,
     "code" : String
-}
 }
 ```
 (사용예시)
