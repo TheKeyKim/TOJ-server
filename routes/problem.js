@@ -71,13 +71,6 @@ router.post('/submit', verifyToken, async (req, res) => {
         console.log(language);
         solving(language, code, problem_id, id);
 
-        var cmd = "echo \"" + code + "\" > " + dir + String(req.body.id) + ".py";
-        var cmds = `
-            echo "${code}" > ${dir+req.body.id}.py
-            python3 ${dir+req.body.id}.py < ${input}${req.body.problem_id}/0.txt > ${output}${req.body.problem_id}/0.txt
-        `
-        // console.log(cmds);
-
         return res.json({
             status:200,
             name:data["name"],
