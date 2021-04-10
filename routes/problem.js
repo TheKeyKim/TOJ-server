@@ -8,22 +8,51 @@ const child_process = require('child_process');
 async function solving(language, code, problem_id, submit_id){ 
     const ext = [".cpp", ".java", ".py"];
     var dir = `./scoring/source/`
-    var input = `./scoring/input/${problem_id}`
+    var input = `./scoring/input/${problem_id}/`
     var output = `./scoring/output/${submit_id}/`
 
     var cmd = "";
     cmd += `echo "${code}" > ${dir}${submit_id}${ext[language]}\n`
     cmd += `mkdir ${output}\n`
+    console.log(code);
     if(language == 0){
-        var tmp = `g++ ${dir}${submit_id}${ext[language]} -o ${submit_id} && ./${submit_id} `;
+        cmd += `
+        for var in {0..100}
+        do 
+            if [ ! -e ./scoring/input/${problem_id}/$var.txt ];then
+                break
+            else
+                in=./scoring/input/${problem_id}/$var.txt
+                out=./scoring/output/${submit_id}/$var.txt
+                g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} && ./${dir}${submit_id} < $in > $out
+            fi
+        done
+        `
 
     }else if(language == 1){
         // var tmp = `javac ${dir}${submit_id}${ext[language]} -o ${submit_id} && java `
     }else if(language == 2){
-        var tmp = `python3 ${dir}${submit_id}${ext[language]}`
-        console.log(cmd)
-        console.log(tmp)
+        cmd += `
+        for var in {0..100}
+        do 
+            if [ ! -e ./scoring/input/${problem_id}/$var.txt ];then
+                break
+            else
+                in=./scoring/input/${problem_id}/$var.txt
+                out=./scoring/output/${submit_id}/$var.txt
+                python3 ${dir}${submit_id}${ext[language]} < $in > $out
+            fi
+        done
+        `
     }
+    child_process.exec(cmd, function(err,stdout,stderr){
+        if(err){
+            console.log('child process exited with error code', err.code);
+            return ;
+        }else{
+            console.log(stdout);
+        }
+    })
 }
 
 // get data POST
@@ -48,14 +77,7 @@ router.post('/submit', verifyToken, async (req, res) => {
             python3 ${dir+req.body.id}.py < ${input}${req.body.problem_id}/0.txt > ${output}${req.body.problem_id}/0.txt
         `
         // console.log(cmds);
-        // child_process.exec(cmds, function(err,stdout,stderr){
-        //     if(err){
-        //         console.log('child process exited with error code', err.code);
-        //         return ;
-        //     }else{
-        //         console.log(stdout);
-        //     }
-        // })
+
         return res.json({
             status:200,
             name:data["name"],
