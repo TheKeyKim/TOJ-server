@@ -2,7 +2,9 @@ const express = require('express')
 const router = express.Router();
 
 const db = require('../models/index')
+const jwt = require('jsonwebtoken');
 const {verifyToken} = require('../utils/jwt');
+
 const child_process = require('child_process');
 
 async function solving(language, code, problem_id, submit_id){ 
@@ -58,17 +60,12 @@ async function solving(language, code, problem_id, submit_id){
 // get data POST
 router.post('/submit', verifyToken, async (req, res) => {
     try{
-        var dir = "./scoring/source/"
-        var input = "./scoring/input/"
-        var output = "./scoring/output/"
         const data  = await db["user"].findOne({
             where : {
                 id:req.decoded.id
             }
         })
-
         const {language, code, id, problem_id} = req.body;
-        console.log(language);
         solving(language, code, problem_id, id);
 
         return res.json({

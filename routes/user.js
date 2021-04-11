@@ -41,7 +41,7 @@ router.post('/login', async (req, res) => {
         if(comparePassword(password, result.dataValues.password)){
             const token = jwt.sign({
                 id : result['id']
-            }, 'thekey_judge', {
+            }, "thekey_judge", {
                 expiresIn:"6h"
             })
             return res.json({
