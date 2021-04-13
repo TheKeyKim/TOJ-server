@@ -1,0 +1,7 @@
+./scoring/source/undefined.cpp:1:1: error: unknown type name 'adfdaf'
+adfdaf
+^
+./scoring/source/undefined.cpp:1:7: error: expected unqualified-id
+adfdaf
+      ^
+2 errors generated.

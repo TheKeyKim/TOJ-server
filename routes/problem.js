@@ -78,7 +78,7 @@ router.post('/submit', verifyToken, async (req, res) => {
     }
 })
 
-router.get('/submit/:id', verifyToken, async (req, res) => {
+router.post('/submitid', verifyToken, async (req, res) => {
     try{
         // finding user_id from tokens
         var user_id  = await db["user"].findOne({
@@ -94,7 +94,7 @@ router.get('/submit/:id', verifyToken, async (req, res) => {
         });
         submit_id = submit_id[0]['max'] + 1;
         // finding problem_id from parmas
-        const problem_id = req.params['id'];
+        const problem_id = req.body.problem_id;
 
         console.log(submit_id, problem_id, user_id);
 
