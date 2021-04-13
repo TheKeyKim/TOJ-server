@@ -15,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
   };
   submit.init({
     submit_id: DataTypes.INTEGER,
-    problem_id: DataTypes.INTEGER
+    problem_id: DataTypes.INTEGER,
+    user_id: DataTypes.INTEGER,
+    status: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'submit',

@@ -99,14 +99,15 @@ router.get('/submit/:id', verifyToken, async (req, res) => {
         console.log(submit_id, problem_id, user_id);
 
         db["submit"].create({
-            submit_id,
-            problem_id,
-            user_id,
+            submit_id : submit_id,
+            problem_id : problem_id,
+            user_id : user_id,
             status : 0
         })
 
         return res.json({
-            status:200
+            status:200,
+            submit_id
         })
     }catch(e){
         console.log(e);
