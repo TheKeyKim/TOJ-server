@@ -1,0 +1,7 @@
+./scoring/source/1000.cpp:1:1: error: unknown type name 'asdf'
+asdf
+^
+./scoring/source/1000.cpp:1:5: error: expected unqualified-id
+asdf
+    ^
+2 errors generated.

@@ -85,3 +85,23 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
     "code" : "#include<iostream>\nusing namespace std;\nint main(void){\n int a, b;\n cin>>a>>b;\ncout<<a+b<<endl;}\n"
 }
 ```
+
+## submid/:id
+- get
+- problem/submig/:id
+- login is needed
+```
+{
+    "submit_id" : Number,
+    "problem_id" : Number,
+    "user_id" : Number,
+    "status" : Number -> [0, 1, 2, 3, 4]
+}
+```
+status 
+- 0 : created
+- 1 : enqueued
+- 2 : AC
+- 3 : RE
+- 4 : TLE
+- 5 : WR

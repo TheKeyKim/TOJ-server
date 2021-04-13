@@ -12,6 +12,7 @@ async function solving(language, code, problem_id, submit_id){
     var dir = `./scoring/source/`
     var input = `./scoring/input/${problem_id}/`
     var output = `./scoring/output/${submit_id}/`
+    var errlog = `./scoring/errlog/${submit_id}`
 
     var cmd = "";
     cmd += `echo "${code}" > ${dir}${submit_id}${ext[language]}\n`
@@ -26,7 +27,7 @@ async function solving(language, code, problem_id, submit_id){
             else
                 in=./scoring/input/${problem_id}/$var.txt
                 out=./scoring/output/${submit_id}/$var.txt
-                g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} && ./${dir}${submit_id} < $in > $out
+                g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} 2> ${errlog}.log && ./${dir}${submit_id} < $in > $out
             fi
         done
         `
@@ -69,10 +70,43 @@ router.post('/submit', verifyToken, async (req, res) => {
         solving(language, code, problem_id, id);
 
         return res.json({
-            status:200,
-            name:data["name"],
-            email:data["email"],
-            id:data["login_id"]
+            status:200
+        })
+    }catch(e){
+        console.log(e);
+        return res.json({status:"ERROR"});
+    }
+})
+
+router.get('/submit/:id', verifyToken, async (req, res) => {
+    try{
+        // finding user_id from tokens
+        var user_id  = await db["user"].findOne({
+            where : {
+                id:req.decoded.id
+            }
+        })
+        user_id = user_id['id'];
+        // finding Max submig_id in DB
+        var submit_id = await db["submit"].findAll({
+            attributes : [[db.Sequelize.fn('MAX', db.Sequelize.col('submit_id')), 'max']],
+            raw : true
+        });
+        submit_id = submit_id[0]['max'] + 1;
+        // finding problem_id from parmas
+        const problem_id = req.params['id'];
+
+        console.log(submit_id, problem_id, user_id);
+
+        db["submit"].create({
+            submit_id,
+            problem_id,
+            user_id,
+            status : 0
+        })
+
+        return res.json({
+            status:200
         })
     }catch(e){
         console.log(e);
