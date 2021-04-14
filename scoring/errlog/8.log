@@ -1,0 +1,7 @@
+./scoring/source/8.cpp:1:1: error: unknown type name 'asdfdsf'
+asdfdsf
+^
+./scoring/source/8.cpp:1:8: error: expected unqualified-id
+asdfdsf
+       ^
+2 errors generated.

@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const {verifyToken} = require('../utils/jwt');
 
 const child_process = require('child_process');
+const { request } = require('http');
 
 async function solving(language, code, problem_id, submit_id){ 
     const ext = [".cpp", ".java", ".py"];
@@ -66,8 +67,16 @@ router.post('/submit', verifyToken, async (req, res) => {
                 id:req.decoded.id
             }
         })
-        const {language, code, id, problem_id} = req.body;
-        solving(language, code, problem_id, id);
+        const {submit_id, language, code, problem_id} = req.body;
+        solving(language, code, problem_id, submit_id);
+        console.log(submit_id, language, code, problem_id)
+        const result = await db["submit"].update({
+            language, code
+        },{
+            where : {
+                submit_id : submit_id
+            }
+        })
 
         return res.json({
             status:200
@@ -109,6 +118,30 @@ router.post('/submitid', verifyToken, async (req, res) => {
             status:200,
             submit_id
         })
+    }catch(e){
+        console.log(e);
+        return res.json({status:"ERROR"});
+    }
+})
+
+router.get('/status/', verifyToken, async (req, res) => { 
+    try{
+        var user_id  = await db["user"].findOne({
+            where : {
+                id:req.decoded.id
+            }
+        })
+        var data = await db["submit"].findAll({
+            where : {
+                user_id
+            }
+        })
+
+        return res.json({
+            status:200,
+            data
+        })
+
     }catch(e){
         console.log(e);
         return res.json({status:"ERROR"});
