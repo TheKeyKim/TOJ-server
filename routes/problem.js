@@ -131,6 +131,7 @@ router.get('/status/', verifyToken, async (req, res) => {
                 id:req.decoded.id
             }
         })
+        user_id = user_id.id;
         var data = await db["submit"].findAll({
             where : {
                 user_id
