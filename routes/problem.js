@@ -18,7 +18,8 @@ async function solving(language, code, problem_id, submit_id){
     var cmd = "";
     cmd += `echo "${code}" > ${dir}${submit_id}${ext[language]}\n`
     cmd += `mkdir ${output}\n`
-    console.log(code);
+    cmd += `mkdir ./scoring/result/${submit_id}\n`
+
     if(language == 0){
         cmd += `
         for var in {0..100}
@@ -26,15 +27,19 @@ async function solving(language, code, problem_id, submit_id){
             if [ ! -e ./scoring/input/${problem_id}/$var.txt ];then
                 break
             else
-                Start=$(date +%s%N)
+                Start=$(date +%s)
                 in=./scoring/input/${problem_id}/$var.txt
                 out=./scoring/output/${submit_id}/$var.txt
                 g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} 2> ${errlog}.log && ./${dir}${submit_id} < $in > $out
-                End=$(date +%s%N)
+                ./scoring/comparison ${problem_id} ${submit_id} $var > ./scoring/result/${submit_id}/$var.txt
+                End=$(date +%s)
+                echo "" >> ./scoring/result/${submit_id}/$var.txt
+                echo $(($End-$Start)) >> ./scoring/result/${submit_id}/$var.txt
             fi
         done
         `
-
+        console.log(cmd)
+        //
     }else if(language == 1){
         // var tmp = `javac ${dir}${submit_id}${ext[language]} -o ${submit_id} && java `
     }else if(language == 2){

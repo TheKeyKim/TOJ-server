@@ -17,9 +17,9 @@ int main(int argc, char **argv){
     string problem_id = argv[1];
     string submit_id = argv[2];
     string input_id = argv[3];
-    string answer = "answer/" + problem_id + "/" + input_id + ".txt";
-    string output = "output/" + submit_id + "/" + input_id + ".txt";
-    string stderr = "errlog/" + submit_id + ".log";
+    string answer = "./scoring/answer/" + problem_id + "/" + input_id + ".txt";
+    string output = "./scoring/output/" + submit_id + "/" + input_id + ".txt";
+    string stderr = "./scoring/errlog/" + submit_id + ".log";
 
     // error check
     FILE* err = fopen(stderr.c_str(), "r");

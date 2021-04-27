@@ -5,3 +5,4 @@ int main(void){
  cin>>a>>b;
 cout<<a+b<<endl;}
 
+
