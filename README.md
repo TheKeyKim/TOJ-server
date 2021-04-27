@@ -95,7 +95,7 @@ request의 body에 코드, problem id, submit id, language code를 담아 요청
     "submit_id" : Number,
     "problem_id" : Number,
     "user_id" : Number,
-    "status" : Number -> [0, 1, 2, 3, 4]
+    "status" : Number -> [0, 1, 2, 3, 4, 5, 6]
 }
 ```
 status 
@@ -105,3 +105,4 @@ status
 - 3 : RE
 - 4 : TLE
 - 5 : WR
+- 6 : CE
