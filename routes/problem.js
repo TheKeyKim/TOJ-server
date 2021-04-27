@@ -26,9 +26,11 @@ async function solving(language, code, problem_id, submit_id){
             if [ ! -e ./scoring/input/${problem_id}/$var.txt ];then
                 break
             else
+                Start=$(date +%s%N)
                 in=./scoring/input/${problem_id}/$var.txt
                 out=./scoring/output/${submit_id}/$var.txt
                 g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} 2> ${errlog}.log && ./${dir}${submit_id} < $in > $out
+                End=$(date +%s%N)
             fi
         done
         `
