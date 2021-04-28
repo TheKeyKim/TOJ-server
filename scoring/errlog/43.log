@@ -1,0 +1,13 @@
+./scoring/source/43.cpp:4:7: error: use of undeclared identifier 'a'
+        cin>>a>>b;
+             ^
+./scoring/source/43.cpp:4:10: error: use of undeclared identifier 'b'
+        cin>>a>>b;
+                ^
+./scoring/source/43.cpp:5:8: error: use of undeclared identifier 'a'
+        cout<<a+b<<endl;
+              ^
+./scoring/source/43.cpp:5:10: error: use of undeclared identifier 'b'
+        cout<<a+b<<endl;
+                ^
+4 errors generated.

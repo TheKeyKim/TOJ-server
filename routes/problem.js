@@ -44,14 +44,19 @@ async function update(problem_id, user_id){
     for(let i=0; i<data.length; i++){
         const submit_id = data[i]['submit_id'];
         console.log(submit_id);
+        var flag = true;
         for(let j=0; j<4; j++){
             var ret = await readTextFile(`file://${__dirname}/../scoring/result/${submit_id}/${j}.txt`);
             if(ret){
                 ret = ret.split("\n");
                 console.log(ret);
-                db["submit"].update({status:ret[0]}, {where:{submit_id}});
+                if(ret[0] != 2) {
+                    flag = false;   
+                    db["submit"].update({status:ret[0]}, {where:{submit_id}});
+                    break;}
             }else break;
         }
+        if(flag) db["submit"].update({status:2}, {where:{submit_id}});
     }
 }
 
@@ -61,36 +66,23 @@ async function solving(language, code, problem_id, submit_id){
     var input = `./scoring/input/${problem_id}/`
     var output = `./scoring/output/${submit_id}/`
     var errlog = `./scoring/errlog/${submit_id}`
+    const time = "3s";
 
     var cmd = "";
     cmd += `echo "${code}" > ${dir}${submit_id}${ext[language]}\n`
     cmd += `mkdir ${output}\n`
     cmd += `mkdir ./scoring/result/${submit_id}\n`
-
+    program = `timeout ${time} ./${dir}${submit_id}`;
     if(language == 0){
-        cmd += `
-        for var in {0..100}
-        do 
-            if [ ! -e ./scoring/input/${problem_id}/$var.txt ];then
-                break
-            else
-                Start=$(date +%s)
-                in=./scoring/input/${problem_id}/$var.txt
-                out=./scoring/output/${submit_id}/$var.txt
-                g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} 2> ${errlog}.log && ./${dir}${submit_id} < $in > $out
-                ./scoring/comparison ${problem_id} ${submit_id} $var > ./scoring/result/${submit_id}/$var.txt
-                End=$(date +%s)
-                echo "" >> ./scoring/result/${submit_id}/$var.txt
-                echo $(($End-$Start)) >> ./scoring/result/${submit_id}/$var.txt
-            fi
-        done
-        `
-        console.log(cmd)
-        //
+        cmd += `g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} 2> ${errlog}.log`
+        program = `timeout ${time} ./${dir}${submit_id}`;
     }else if(language == 1){
         // var tmp = `javac ${dir}${submit_id}${ext[language]} -o ${submit_id} && java `
     }else if(language == 2){
-        cmd += `
+        program = `timeout ${time} python3 ${dir}${submit_id}${ext[language]}`;
+    }
+
+    cmd += `
         for var in {0..100}
         do 
             if [ ! -e ./scoring/input/${problem_id}/$var.txt ];then
@@ -99,7 +91,12 @@ async function solving(language, code, problem_id, submit_id){
                 Start=$(date +%s)
                 in=./scoring/input/${problem_id}/$var.txt
                 out=./scoring/output/${submit_id}/$var.txt
-                python3 ${dir}${submit_id}${ext[language]} < $in > $out
+                ${program} < $in > $out 
+                t=$(echo $?)
+                if [ $t == 124 ];then
+                    echo "4" > ./scoring/result/${submit_id}/$var.txt
+                    break
+                fi
                 ./scoring/comparison ${problem_id} ${submit_id} $var > ./scoring/result/${submit_id}/$var.txt
                 End=$(date +%s)
                 echo "" >> ./scoring/result/${submit_id}/$var.txt
@@ -107,7 +104,7 @@ async function solving(language, code, problem_id, submit_id){
             fi
         done
         `
-    }
+
     child_process.exec(cmd, function(err,stdout,stderr){
         if(err){
             console.log('child process exited with error code', err.code);

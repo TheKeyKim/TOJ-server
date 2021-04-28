@@ -4,3 +4,4 @@ node_modules/
 scoring/source/*
 scoring/output/*
 scoring/result/*
+test.*
