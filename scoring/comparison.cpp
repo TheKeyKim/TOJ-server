@@ -24,9 +24,9 @@ int main(int argc, char **argv){
     // error check
     FILE* err = fopen(stderr.c_str(), "r");
     char buff[10000];
-    fgets(buff, sizeof(buff), err);
+    if(err) fgets(buff, sizeof(buff), err);
     int n = buff[0];
-    if(n != 0){
+    if(err && n != 0){
         string s;
         while(fgets(buff, sizeof(buff), err)) s = strip((string) buff);
         printf("6"); //compile error

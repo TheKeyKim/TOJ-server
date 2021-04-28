@@ -7,6 +7,53 @@ const {verifyToken} = require('../utils/jwt');
 
 const child_process = require('child_process');
 const { request } = require('http');
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
+
+function readTextFile(file)
+{
+    try{
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", file, false);
+        rawFile.onreadystatechange = function ()
+        {   
+            if(rawFile.readyState === 4)
+            {
+                if(rawFile.status === 200 || rawFile.status == 0)
+                {
+                    var allText = rawFile.responseText;
+                }
+            }
+        }
+        rawFile.send(null);
+        if(rawFile.status === 0) return false;
+        return rawFile.responseText;
+    } catch(e){
+        return false;
+    }
+}
+
+async function update(problem_id, user_id){
+    const data = await db["submit"].findAll({
+        where : {
+            status : 0,
+            problem_id : problem_id,
+            user_id : user_id
+        }
+    })
+    for(let i=0; i<data.length; i++){
+        const submit_id = data[i]['submit_id'];
+        console.log(submit_id);
+        for(let j=0; j<4; j++){
+            var ret = await readTextFile(`file://${__dirname}/../scoring/result/${submit_id}/${j}.txt`);
+            if(ret){
+                ret = ret.split("\n");
+                console.log(ret);
+                db["submit"].update({status:ret[0]}, {where:{submit_id}});
+            }else break;
+        }
+    }
+}
 
 async function solving(language, code, problem_id, submit_id){ 
     const ext = [".cpp", ".java", ".py"];
@@ -49,9 +96,14 @@ async function solving(language, code, problem_id, submit_id){
             if [ ! -e ./scoring/input/${problem_id}/$var.txt ];then
                 break
             else
+                Start=$(date +%s)
                 in=./scoring/input/${problem_id}/$var.txt
                 out=./scoring/output/${submit_id}/$var.txt
                 python3 ${dir}${submit_id}${ext[language]} < $in > $out
+                ./scoring/comparison ${problem_id} ${submit_id} $var > ./scoring/result/${submit_id}/$var.txt
+                End=$(date +%s)
+                echo "" >> ./scoring/result/${submit_id}/$var.txt
+                echo $(($End-$Start)) >> ./scoring/result/${submit_id}/$var.txt
             fi
         done
         `
@@ -65,6 +117,7 @@ async function solving(language, code, problem_id, submit_id){
         }
     })
 }
+
 
 // get data POST
 router.post('/submit', verifyToken, async (req, res) => {
@@ -131,29 +184,40 @@ router.post('/submitid', verifyToken, async (req, res) => {
     }
 })
 
-router.get('/status/', verifyToken, async (req, res) => { 
+router.get('/status/:id', verifyToken, async (req, res) => { 
     try{
+        const problem_id = req.params.id;
         var user_id  = await db["user"].findOne({
             where : {
                 id:req.decoded.id
             }
         })
         user_id = user_id.id;
-        var data = await db["submit"].findAll({
-            where : {
-                user_id
-            }
-        })
+        var data;
+        update(problem_id, user_id);
+        if(problem_id != 0)
+            data = await db["submit"].findAll({
+                where : {
+                    user_id,
+                    problem_id : problem_id,
+                }
+            })
+        else 
+            data = await db["submit"].findAll({
+                where : {
+                    user_id
+                }
+            })
 
         return res.json({
             status:200,
             data
         })
-
     }catch(e){
         console.log(e);
         return res.json({status:"ERROR"});
     }
 })
+
 
 module.exports = router
