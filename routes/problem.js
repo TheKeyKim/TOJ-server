@@ -45,16 +45,18 @@ async function update(problem_id, user_id){
         const submit_id = data[i]['submit_id'];
         console.log(submit_id);
         var flag = true;
-        for(let j=0; j<4; j++){
+        for(let j=0; j<100; j++){
             var ret = await readTextFile(`file://${__dirname}/../scoring/result/${submit_id}/${j}.txt`);
             if(ret){
                 ret = ret.split("\n");
-                console.log(ret);
                 if(ret[0] != 2) {
                     flag = false;   
                     db["submit"].update({status:ret[0]}, {where:{submit_id}});
                     break;}
-            }else break;
+            }else {
+                if(j == 0) flag = false
+                break;
+            }
         }
         if(flag) db["submit"].update({status:2}, {where:{submit_id}});
     }
