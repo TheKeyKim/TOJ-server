@@ -5,4 +5,6 @@ scoring/source/*
 scoring/output/*
 scoring/result/*
 scoring/errlog/*
+scoring/runtimeerr/*
 test.*
+test
