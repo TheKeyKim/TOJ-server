@@ -84,4 +84,41 @@ router.get('/', verifyToken, async (req, res) => {
     }
 })
 
+
+router.get('/idDup/:id', async (req, res) => {
+    try{
+        const user_id = req.params.id;
+        const id_duplication = await db["user"].findAll({
+            where:{
+              login_id : user_id
+            }
+          })
+        return res.json({
+            status : 200,
+            data : id_duplication.length
+        })
+    }
+    catch(e){
+        return res.json({status:"ERROR"})
+    }
+})
+
+router.get('/emailDup/:email', async (req, res) => {
+    try{
+        const email = req.params.email;
+        const email_duplication = await db["user"].findAll({
+            where:{
+              email : email
+            }
+          })
+        return res.json({
+            status : 200,
+            data : email_duplication.length
+        })
+    }
+    catch(e){
+        return res.json({status:"ERROR"})
+    }
+})
+
 module.exports = router

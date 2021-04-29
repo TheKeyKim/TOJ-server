@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdio>
+#include <cstring>
 
 using namespace std;
 
@@ -20,18 +21,33 @@ int main(int argc, char **argv){
     string answer = "./scoring/answer/" + problem_id + "/" + input_id + ".txt";
     string output = "./scoring/output/" + submit_id + "/" + input_id + ".txt";
     string stderr = "./scoring/errlog/" + submit_id + ".log";
+    string runtimeerr = "./scoring/runtimeerr/" + submit_id + ".log";
 
     // error check
     FILE* err = fopen(stderr.c_str(), "r");
     char buff[10000];
     if(err) fgets(buff, sizeof(buff), err);
     int n = buff[0];
+    string::size_type st;
     if(err && n != 0){
         string s;
         while(fgets(buff, sizeof(buff), err)) s = strip((string) buff);
-        printf("6"); //compile error
+        st = s.find("error");
+        if(st != string::npos){
+            printf("6"); //compile error
+            return 0;
+        }
+    }
+    FILE* run = fopen(runtimeerr.c_str(), "r");
+    if(run) fgets(buff, sizeof(buff), run);
+    n = buff[0];
+    if(run && n != 0){
+        string s;
+        while(fgets(buff, sizeof(buff), run)) s = strip((string) buff);
+        printf("3"); //runtime error
         return 0;
     }
+
     FILE* anw = fopen(answer.c_str(), "r");
     FILE* out = fopen(output.c_str(), "r");
     char anw_buff[10000];

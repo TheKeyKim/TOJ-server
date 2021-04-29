@@ -68,6 +68,7 @@ async function solving(language, code, problem_id, submit_id){
     var input = `./scoring/input/${problem_id}/`
     var output = `./scoring/output/${submit_id}/`
     var errlog = `./scoring/errlog/${submit_id}`
+    var runtimeerr = `./scoring/runtimeerr/${submit_id}`
     const time = "3s";
 
     var cmd = "";
@@ -77,11 +78,11 @@ async function solving(language, code, problem_id, submit_id){
     program = `timeout ${time} ./${dir}${submit_id}`;
     if(language == 0){
         cmd += `g++ ${dir}${submit_id}${ext[language]} -o ${dir}${submit_id} 2> ${errlog}.log`
-        program = `timeout ${time} ./${dir}${submit_id}`;
+        program = `./${dir}${submit_id}`;
     }else if(language == 1){
         // var tmp = `javac ${dir}${submit_id}${ext[language]} -o ${submit_id} && java `
     }else if(language == 2){
-        program = `timeout ${time} python3 ${dir}${submit_id}${ext[language]}`;
+        program = `python3 ${dir}${submit_id}${ext[language]}`;
     }
 
     cmd += `
@@ -93,7 +94,7 @@ async function solving(language, code, problem_id, submit_id){
                 Start=$(date +%s)
                 in=./scoring/input/${problem_id}/$var.txt
                 out=./scoring/output/${submit_id}/$var.txt
-                ${program} < $in > $out 
+                timeout ${time} sh -c 'trap "" 11; ${program}' < $in 1> $out 2>> ${runtimeerr}.log
                 t=$(echo $?)
                 if [ $t == 124 ];then
                     echo "4" > ./scoring/result/${submit_id}/$var.txt
