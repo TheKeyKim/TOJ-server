@@ -8,7 +8,7 @@ Thekeys judge 백준 클론 사이트를 위한 서버입니다. 로그인과 �
 1. login(done)
 2. siginin(done)
 3. Get Problem Information(todo)
-4. Algorithm Solving Server(todo)
+4. Algorithm Solving Server(done)
 
 # 문제 채점 로직
 request의 body에 코드, problem id, submit id, language code를 담아 요청합니다. 이때 코드에서는 [ ", ', \\ ] 에 대한 전처리를 해주어야 인식이 가능합니다. <br>
