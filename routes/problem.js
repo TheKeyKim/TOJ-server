@@ -8,6 +8,7 @@ const {verifyToken} = require('../utils/jwt');
 const child_process = require('child_process');
 const { request } = require('http');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var fs = require('fs');
 
 
 function readTextFile(file)
@@ -118,6 +119,24 @@ async function solving(language, code, problem_id, submit_id){
     })
 }
 
+router.get('/:id', async (req, res) => {
+    try{
+        var ret = await fs.readFile(`${__dirname}/../utils/problems/${req.params.id}.json`, 'utf8', function(err, data){
+            if(err){
+                console.log(err)
+                return res.json({status:"ERROR", log:"Problem Not Found"});
+            }
+            return res.json({
+                status : "OK",
+                content : JSON.parse(data)
+            })
+        })
+        return ret;
+    }catch(e){
+        console.log(e);
+        return res.json({status:"ERROR"});
+    }
+})
 
 // get data POST
 router.post('/submit', verifyToken, async (req, res) => {
