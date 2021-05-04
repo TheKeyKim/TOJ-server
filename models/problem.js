@@ -14,10 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   problem.init({
+    problem_id: DataTypes.INTEGER,
     name: DataTypes.STRING,
-    contents: DataTypes.STRING,
-    restrict: DataTypes.STRING,
-    code: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'problem',

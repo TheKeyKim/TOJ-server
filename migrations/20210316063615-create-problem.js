@@ -8,16 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      problem_id:{
+        type : Sequelize.INTEGER
+      },
       name: {
-        type: Sequelize.STRING
-      },
-      contents: {
-        type: Sequelize.STRING
-      },
-      restrict: {
-        type: Sequelize.STRING
-      },
-      code: {
         type: Sequelize.STRING
       },
       createdAt: {

@@ -119,6 +119,26 @@ async function solving(language, code, problem_id, submit_id){
     })
 }
 
+router.get('/list/:page', async(req, res) => {
+    try{
+        console.log(req.params.page)
+        const data = await db["problem"].findAll({
+            offset: Number(req.params.page),
+            limit : 10
+        })
+        const arr = []
+        console.log(data)
+        for(let i=0; i < data.length; i++) arr.push({ problem_id : data[i]['problem_id'], name : data[i]['name']})
+        return res.json({
+            status:"OK",
+            problemArray : arr
+        })
+    }catch(e){
+        console.log(e);
+        return res.json({status:"ERROR"});
+    }
+})
+
 router.get('/:id', async (req, res) => {
     try{
         var ret = await fs.readFile(`${__dirname}/../utils/problems/${req.params.id}.json`, 'utf8', function(err, data){
